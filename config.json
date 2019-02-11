@@ -1,5 +1,5 @@
 {
-	"name": "FAQ Menu",
+	"name": "FAQ Builder",
 
 	"namespace": "Vanderbilt\\FaqMenuExternalModule",
 
@@ -16,7 +16,7 @@
 	"links": {
 		"project": [
 			{
-				"name": "FAQ Menu",
+				"name": "FAQ Builder",
 				"icon": "blog_blue",
 				"url": "configure.php"
 			}
