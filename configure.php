@@ -31,6 +31,8 @@ include_once(__DIR__ . "/functions.php");
 
 <link rel="icon" href="<?=$module->getUrl(getImageToDisplay($faq_favicon))?>">
 
+<title><?=$faq_title?></title>
+
 <script>
     $(document).ready(function() {
         (function($) {
