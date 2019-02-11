@@ -1,0 +1,95 @@
+{
+	"name": "FAQ Menu",
+
+	"namespace": "Vanderbilt\\FaqMenuExternalModule",
+
+	"authors": [
+		{
+			"name": "Eva Bascompte Moragas",
+			"email": "datacore@vanderbilt.edu",
+			"institution": "Vanderbilt University Medical Center"
+		}
+	],
+
+	"permissions": [],
+
+	"links": {
+		"project": [
+			{
+				"name": "FAQ Menu",
+				"icon": "blog_blue",
+				"url": "configure.php"
+			}
+		]
+	},
+
+	"no-auth-pages":["configure","downloadFile","downloadDataDictionary"],
+
+	"description": "Customizable FAQ menu to show a searcheable list of questions and their answers. <br><br><span style='color:red'>**To download a <strong>Data Dictionary</strong> example click on <em>View Documentation</em>.</span>",
+
+	"project-settings": [
+		{
+			"key": "faq-explanation",
+			"name": "<span style='color:red'>**To download a <strong>Data Dictionary</strong> example click on <em>View Documentation</em>.</span>",
+			"type": "descriptive"
+		},
+		{
+			"key": "faq-favicon",
+			"name": "Favicon for the page",
+			"type": "file"
+		},
+		{
+			"key": "faq-title",
+			"name": "Title at the top of the page.",
+			"type": "text"
+		},
+		{
+			"key": "faq-description",
+			"name": "Descriptive text for the page.",
+			"type": "textarea"
+		},
+		{
+			"key": "faq-category",
+			"name": "Category variable name",
+			"required": true,
+			"type": "text"
+		},
+		{
+			"key": "faq-question",
+			"name": "Question variable name",
+			"required": true,
+			"type": "text"
+		},
+		{
+			"key": "faq-answer",
+			"name": "Answer variable name",
+			"required": true,
+			"type": "text"
+		},
+		{
+			"key": "faq-image",
+			"name": "Image variable name",
+			"required": true,
+			"type": "text"
+		},
+		{
+			"key": "faq-video-embedcode",
+			"name": "Video Embed Code Format variable name",
+			"required": true,
+			"type": "text"
+		},
+		{
+			"key": "faq-video-videolink",
+			"name": "Video Link Format variable name",
+			"required": true,
+			"type": "text"
+		},
+		{
+			"key": "faq-show",
+			"name": "Show this FAQ item? variable name",
+			"required": true,
+			"type": "text"
+		}
+
+	]
+}
