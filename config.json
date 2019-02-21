@@ -23,15 +23,22 @@
 		]
 	},
 
-	"no-auth-pages":["configure","downloadFile","downloadDataDictionary"],
+	"no-auth-pages":["configure","downloadFile","data_dictionary_upload"],
 
 	"description": "Customizable FAQ menu to show a searcheable list of questions and their answers. <br><br><span style='color:red'>**To download a <strong>Data Dictionary</strong> example click on <em>View Documentation</em>.</span>",
 
 	"project-settings": [
 		{
-			"key": "faq-explanation",
-			"name": "<span style='color:red'>**To download a <strong>Data Dictionary</strong> example click on <em>View Documentation</em>.</span>",
-			"type": "descriptive"
+			"key": "faq-btn",
+			"name": "Favicon for the page",
+			"type": "button",
+			"url":
+				{
+					"name": "Upload Data Dictionary",
+					"value": "data_dictionary_upload.php?configure",
+					"message":"Data dictionary uploaded"
+				}
+
 		},
 		{
 			"key": "faq-favicon",
@@ -40,55 +47,56 @@
 		},
 		{
 			"key": "faq-title",
-			"name": "Title at the top of the page.",
+			"name": "Title at the top of the page",
 			"type": "text"
 		},
 		{
 			"key": "faq-description",
-			"name": "Descriptive text for the page.",
+			"name": "Descriptive text for the page",
 			"type": "textarea"
 		},
 		{
-			"key": "faq-category",
-			"name": "Category variable name",
-			"required": true,
-			"type": "text"
+			"key": "faq-privacy-description",
+			"name": "<div>Select a privacy type for the FAQ builder:</div><br><div class='alert alert-info' style='border-color:#bce8f1 !important'><ul><li><strong>Public</strong> (no login required; anyone with the link can view/access the FAQ page)</li><li><strong>This Project's users only</strong> (REDCap login required; only users on this project can access the FAQ page)</li><li><strong>A different Project's users</strong> (REDCap login required; only users from another project can access the FAQ page)</li></ul></div>",
+			"type": "descriptive"
 		},
 		{
-			"key": "faq-question",
-			"name": "Question variable name",
+			"key": "faq-privacy",
+			"name": "Privacy type",
 			"required": true,
-			"type": "text"
+			"choices": [
+				{
+					"name": "Public",
+					"value": "public"
+				},
+				{
+					"name": "This Project's users only",
+					"value": "main"
+				},
+				{
+					"name": "A different Project's users",
+					"value": "other"
+				}
+			],
+			"type":"radio"
 		},
 		{
-			"key": "faq-answer",
-			"name": "Answer variable name",
-			"required": true,
-			"type": "text"
-		},
-		{
-			"key": "faq-image",
-			"name": "Image variable name",
-			"required": true,
-			"type": "text"
-		},
-		{
-			"key": "faq-video-embedcode",
-			"name": "Video Embed Code Format variable name",
-			"required": true,
-			"type": "text"
-		},
-		{
-			"key": "faq-video-videolink",
-			"name": "Video Link Format variable name",
-			"required": true,
-			"type": "text"
-		},
-		{
-			"key": "faq-show",
-			"name": "Show this FAQ item? variable name",
-			"required": true,
-			"type": "text"
+			"key": "projects",
+			"name": "Select the project/s whose people can access the FAQ",
+			"type": "sub_settings",
+			"repeatable":true,
+			"branchingLogic": {
+				"field": "faq-privacy",
+				"op":"=",
+				"value": "other"
+			},
+			"sub_settings":[
+				{
+					"key": "faq-project",
+					"name": "Project",
+					"type": "project-id"
+				}
+			]
 		}
 
 	]

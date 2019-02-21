@@ -16,4 +16,13 @@ function getImageToDisplay($edoc){
 
     return $img_logo;
 }
+
+function isUserExpiredOrSuspended($username,$field){
+    $sql = "SELECT * FROM redcap_user_information WHERE username = '".$username."' AND ".$field." IS NOT NULL";
+    $result = db_query($sql);
+    if (db_num_rows($result) > 0) {
+        return true;
+    }
+    return false;
+}
 ?>

@@ -1,18 +1,17 @@
 <?php
-$faq_show = $module->getProjectSetting('faq-show');
-$faq_category = $module->getProjectSetting('faq-category');
-$faq_question = $module->getProjectSetting('faq-question');
-$faq_answer = $module->getProjectSetting('faq-answer');
-$faq_image = $module->getProjectSetting('faq-image');
-$faq_video_embedcode = $module->getProjectSetting('faq-video-embedcode');
-$faq_video_videolink = $module->getProjectSetting('faq-video-videolink');
+include_once(__DIR__ . "/functions.php");
+
 $faq_description = $module->getProjectSetting('faq-description');
 $faq_title = $module->getProjectSetting('faq-title');
 $faq_favicon = $module->getProjectSetting('faq-favicon');
+$faq_project = $module->getProjectSetting('faq-project');
+$faq_privacy = $module->getProjectSetting('faq-privacy');
+//$faq_project = $module->setProjectSetting('faq-project','');
 
 $faqs = \REDCap::getData(array('project_id'=>$module->getProjectId()),'array');
 
-$help_category_aux = \REDCap::getDataDictionary($module->getProjectId(), 'array', false, $faq_category)[$faq_category]['select_choices_or_calculations'];
+$help_category_aux = \REDCap::getDataDictionary($module->getProjectId(), 'array', false, 'help_category')['help_category']['select_choices_or_calculations'];
+
 $help_category_aux = explode('|',$help_category_aux);
 $help_category = array();
 foreach ($help_category_aux as $help){
@@ -20,7 +19,6 @@ foreach ($help_category_aux as $help){
     $help_category[trim($values[0])]= trim($values[1]);
 }
 
-include_once(__DIR__ . "/functions.php");
 ?>
 
 <script type="text/javascript" src="<?=$module->getUrl('js/jquery-3.3.1.min.js')?>"></script>
@@ -93,11 +91,77 @@ include_once(__DIR__ . "/functions.php");
         if (e.which == 13) e.preventDefault();
     });
 </script>
+
+<?php
+$has_permission = false;
+
+if($faq_privacy == 'public'){
+    $has_permission = true;
+}else if($faq_privacy == 'main'){
+    if(!defined('USERID')){
+        echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">Please log in REDCap to access this FAQ.</div></div>';
+        exit;
+    }else if(isUserExpiredOrSuspended(USERID, 'user_suspended_time') || isUserExpiredOrSuspended(USERID, 'user_expiration')) {
+        echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">This user is expired or suspended. Please contact and administrator.</div></div>';
+        exit;
+    }else{
+        $sql = "SELECT * FROM `redcap_user_rights` WHERE project_id='" . $_REQUEST['pid'] . "' AND username='" . USERID . "'";
+        $result = db_query($sql);
+        if (db_num_rows($result) > 0) {
+            $has_permission = true;
+        }
+    }
+}else if($faq_privacy == 'other') {
+    if(!defined('USERID')){
+        echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">Please log in REDCap to access this FAQ.</div></div>';
+        exit;
+    }else if(count($faq_project) == 0) {
+        echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">Please select a project(s) to give permissions to.</div></div>';
+        exit;
+    }else if(isUserExpiredOrSuspended(USERID, 'user_suspended_time') || isUserExpiredOrSuspended(USERID, 'user_expiration')) {
+        echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">This user is expired or suspended. Please contact and administrator.</div></div>';
+        exit;
+    }else{
+        foreach ($faq_project as $project) {
+            $sql = "SELECT * FROM `redcap_user_rights` WHERE project_id='" . $project . "' AND username='" . USERID . "'";
+            $result = db_query($sql);
+            if (db_num_rows($result) > 0) {
+                $has_permission = true;
+            }
+        }
+    }
+}
+
+
+
+
+
+if(!$has_permission){
+    echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">You don\'t have permissions to access this FAQ. Please contact and administrator.</div></div>';
+    exit;
+}
+
+#Can see the FAQ Builder
+if($has_permission){
+    if(array_key_exists('upload_success',$_REQUEST)){
+        echo '<div class="container" style="margin-top: 60px"><div class="alert alert-success" role="alert">Data Dictionary successfully uploaded.</div></div>';
+    }
+
+    if(count($faqs) == 0) {
+        echo '<div class="container" style="margin-top: 60px">
+            <div class="alert alert-warning" role="alert">
+                <span style="line-height: 3;">There is no data in the current project.</span>
+            </div>
+          </div>';
+    }
+?>
+
 <div class="container" style="margin-top: 60px">
     <h3><?=$faq_title?></h3>
     <p class="hub-title"><?=$faq_description?></p>
 </div>
 
+<?php if(count($faqs) > 0) {?>
 <div class="container">
     <div class="form-group" id="filter-form">
         <label for="filter">
@@ -111,6 +175,7 @@ include_once(__DIR__ . "/functions.php");
         </small>
     </div>
 </div>
+<?php } ?>
 
 <div class="container">
     <div class="panel-group searchable" id="accordion">
@@ -120,9 +185,9 @@ include_once(__DIR__ . "/functions.php");
                 foreach ($help_category as $category_id => $category_value) {
                     $category_count = 0;
                     foreach ($event as $faq) {
-                        if ($faq[$faq_category] == $category_id && $faq[$faq_show] != "0") {
+                        if ($faq['faq_category'] == $category_id && $faq['help_show_y'] != "0") {
                             if ($category_count == 0) {
-                                echo '<div class="faqHeader">' . $help_category[$faq[$faq_category]] . '</div>';
+                                echo '<div class="faqHeader">' . $help_category[$faq['faq_category']] . '</div>';
                             }
                             $category_count++;
                             $collapse_id = "category_" . $category_id . "_question_" . $category_count;
@@ -130,15 +195,15 @@ include_once(__DIR__ . "/functions.php");
                             echo '<div class="panel panel-default">
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
-                                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#' . $collapse_id . '">' . $faq[$faq_question] . '</a>
+                                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#' . $collapse_id . '">' . $faq['help_question'] . '</a>
                                         </h4>
                                     </div>
                                     <div id="' . $collapse_id . '" class="panel-collapse collapse">
                                         <div class="panel-body">
-                                            <div>' . $faq[$faq_answer] . '</div>';
+                                            <div>' . $faq['help_answer'] . '</div>';
 
-                            if ($faq[$faq_image] != '') {
-                                $sql = "SELECT stored_name,doc_name,doc_size FROM redcap_edocs_metadata WHERE doc_id=" . $faq[$faq_image];
+                            if ($faq['help_image'] != '') {
+                                $sql = "SELECT stored_name,doc_name,doc_size FROM redcap_edocs_metadata WHERE doc_id=" . $faq['help_image'];
                                 $q = db_query($sql);
 
                                 if ($error = db_error()) {
@@ -152,9 +217,9 @@ include_once(__DIR__ . "/functions.php");
                             }
 
                             if ($faq['help_videoformat'] == '1') {
-                                echo '</br><div><iframe class="commentsform" id="redcap-video-frame" name="redcap-video-frame" src="' . $faq[$faq_video_videolink] . '" width="520" height="345" frameborder="0" allowfullscreen style="display: block; margin: 0 auto;"></iframe></div>';
+                                echo '</br><div><iframe class="commentsform" id="redcap-video-frame" name="redcap-video-frame" src="' . $faq['help_videolink'] . '" width="520" height="345" frameborder="0" allowfullscreen style="display: block; margin: 0 auto;"></iframe></div>';
                             }else{
-                                echo '</br><div class="help_embedcode">' . $faq[$faq_video_embedcode] . '</div>';
+                                echo '</br><div class="help_embedcode">' . $faq['help_embedcode'] . '</div>';
                             }
 
                             echo '</div>
@@ -168,3 +233,4 @@ include_once(__DIR__ . "/functions.php");
         ?>
     </div>
 </div>
+<?php } ?>
