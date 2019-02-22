@@ -183,9 +183,9 @@ if($has_permission){
     <div class="panel-group searchable" id="accordion">
         <?php
         if(count($faqs) > 0) {
-            foreach ($faqs as $event) {
-                foreach ($help_category as $category_id => $category_value) {
-                    $category_count = 0;
+            foreach ($help_category as $category_id => $category_value) {
+                $category_count = 0;
+                foreach ($faqs as $event) {
                     foreach ($event as $faq) {
                         if ($faq['help_category'] == $category_id && $faq['help_show_y'] != "0") {
                             if ($category_count == 0) {
@@ -213,14 +213,14 @@ if($has_permission){
                                 }
 
                                 while ($row = db_fetch_assoc($q)) {
-                                    $url = 'downloadFile.php?sname='.$row['stored_name'].'&file='. urlencode($row['doc_name']);
-                                    echo '</br><div><img src="'.$module->getUrl($url).'" style="display: block; margin: 0 auto;"></div>';
+                                    $url = 'downloadFile.php?sname=' . $row['stored_name'] . '&file=' . urlencode($row['doc_name']);
+                                    echo '</br><div><img src="' . $module->getUrl($url) . '" style="display: block; margin: 0 auto;"></div>';
                                 }
                             }
 
                             if ($faq['help_videoformat'] == '1') {
                                 echo '</br><div><iframe class="commentsform" id="redcap-video-frame" name="redcap-video-frame" src="' . $faq['help_videolink'] . '" width="520" height="345" frameborder="0" allowfullscreen style="display: block; margin: 0 auto;"></iframe></div>';
-                            }else{
+                            } else {
                                 echo '</br><div class="help_embedcode">' . $faq['help_embedcode'] . '</div>';
                             }
 
