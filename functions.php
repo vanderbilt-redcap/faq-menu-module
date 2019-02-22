@@ -42,7 +42,7 @@ function printFile($module,$edoc, $type){
             if($type == "img"){
                 $file = '</br><div><img src="' . $module->getUrl($url) . '" style="display: block; margin: 0 auto;"></div>';
             }else{
-                $file = '</br><div><a href="'.$module->getUrl($url).'" target="_blank"><span class="fa fa-file-o"></i> ' . $row['doc_name'] . '</a></div>';
+                $file = '</br><div><a href="'.$module->getUrl($url).'" target="_blank"><span class="fa fa-file-o"></span> ' . $row['doc_name'] . '</a></div>';
             }
 
         }
