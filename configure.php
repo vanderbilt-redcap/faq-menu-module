@@ -1,4 +1,5 @@
 <?php
+
 include_once(__DIR__ . "/functions.php");
 
 $faq_description = $module->getProjectSetting('faq-description');
@@ -25,6 +26,7 @@ foreach ($help_category_aux as $help){
 
 <link rel="stylesheet" type="text/css" href="<?=$module->getUrl('css/bootstrap.min.css')?>">
 <link rel="stylesheet" type="text/css" href="<?=$module->getUrl('css/style.css')?>">
+<link type='text/css' href=<?=$module->getUrl('css/font-awesome.min.css')?> rel='stylesheet' media='screen' />
 
 <link rel="icon" href="<?=$module->getUrl(getImageToDisplay($faq_favicon))?>">
 
@@ -204,19 +206,10 @@ if($has_permission){
                                         <div class="panel-body">
                                             <div>' . $faq['help_answer'] . '</div>';
 
-                            if ($faq['help_image'] != '') {
-                                $sql = "SELECT stored_name,doc_name,doc_size FROM redcap_edocs_metadata WHERE doc_id=" . $faq['help_image'];
-                                $q = db_query($sql);
 
-                                if ($error = db_error()) {
-                                    die($sql . ': ' . $error);
-                                }
-
-                                while ($row = db_fetch_assoc($q)) {
-                                    $url = 'downloadFile.php?sname=' . $row['stored_name'] . '&file=' . urlencode($row['doc_name']);
-                                    echo '</br><div><img src="' . $module->getUrl($url) . '" style="display: block; margin: 0 auto;"></div>';
-                                }
-                            }
+                            echo printFile($module,$faq['help_image'],'img');
+                            echo printFile($module,$faq['help_document'],'doc');
+                            echo printFile($module,$faq['help_document2'],'doc');
 
                             if ($faq['help_videoformat'] == '1') {
                                 echo '</br><div><iframe class="commentsform" id="redcap-video-frame" name="redcap-video-frame" src="' . $faq['help_videolink'] . '" width="520" height="345" frameborder="0" allowfullscreen style="display: block; margin: 0 auto;"></iframe></div>';

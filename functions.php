@@ -1,4 +1,5 @@
 <?php
+
 function getImageToDisplay($edoc){
     $img_logo = '';
     if($edoc != ''){
@@ -24,5 +25,28 @@ function isUserExpiredOrSuspended($username,$field){
         return true;
     }
     return false;
+}
+
+function printFile($module,$edoc, $type){
+    $file = "";
+    if($edoc != ""){
+        $sql = "SELECT stored_name,doc_name,doc_size FROM redcap_edocs_metadata WHERE doc_id=" . $edoc;
+        $q = db_query($sql);
+
+        if ($error = db_error()) {
+            die($sql . ': ' . $error);
+        }
+
+        while ($row = db_fetch_assoc($q)) {
+            $url = 'downloadFile.php?sname=' . $row['stored_name'] . '&file=' . urlencode($row['doc_name']);
+            if($type == "img"){
+                $file = '</br><div><img src="' . $module->getUrl($url) . '" style="display: block; margin: 0 auto;"></div>';
+            }else{
+                $file = '</br><div><a href="'.$module->getUrl($url).'" target="_blank"><span class="fa fa-file-o"></i> ' . $row['doc_name'] . '</a></div>';
+            }
+
+        }
+    }
+    return $file;
 }
 ?>
