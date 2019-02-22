@@ -6,7 +6,6 @@ $faq_title = $module->getProjectSetting('faq-title');
 $faq_favicon = $module->getProjectSetting('faq-favicon');
 $faq_project = $module->getProjectSetting('faq-project');
 $faq_privacy = $module->getProjectSetting('faq-privacy');
-//$faq_project = $module->setProjectSetting('faq-project','');
 
 $faqs = \REDCap::getData(array('project_id'=>$module->getProjectId()),'array');
 
@@ -102,7 +101,7 @@ if($faq_privacy == 'public'){
         echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">Please log in REDCap to access this FAQ.</div></div>';
         exit;
     }else if(isUserExpiredOrSuspended(USERID, 'user_suspended_time') || isUserExpiredOrSuspended(USERID, 'user_expiration')) {
-        echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">This user is expired or suspended. Please contact and administrator.</div></div>';
+        echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">This user is expired or suspended. Please contact an administrator.</div></div>';
         exit;
     }else{
         $sql = "SELECT * FROM `redcap_user_rights` WHERE project_id='" . $_REQUEST['pid'] . "' AND username='" . USERID . "'";
@@ -119,7 +118,7 @@ if($faq_privacy == 'public'){
         echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">Please select a project(s) to give permissions to.</div></div>';
         exit;
     }else if(isUserExpiredOrSuspended(USERID, 'user_suspended_time') || isUserExpiredOrSuspended(USERID, 'user_expiration')) {
-        echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">This user is expired or suspended. Please contact and administrator.</div></div>';
+        echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">This user is expired or suspended. Please contact an administrator.</div></div>';
         exit;
     }else{
         foreach ($faq_project as $project) {
@@ -130,6 +129,9 @@ if($faq_privacy == 'public'){
             }
         }
     }
+}else{
+    echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">This FAQ has not yet been set up. Please go to the “<strong>External Modules</strong>” menu and configure the FAQ Builder.</div></div>';
+    exit;
 }
 
 
@@ -137,7 +139,7 @@ if($faq_privacy == 'public'){
 
 
 if(!$has_permission){
-    echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">You don\'t have permissions to access this FAQ. Please contact and administrator.</div></div>';
+    echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">You don\'t have permissions to access this FAQ. Please contact an administrator.</div></div>';
     exit;
 }
 
@@ -150,7 +152,7 @@ if($has_permission){
     if(count($faqs) == 0) {
         echo '<div class="container" style="margin-top: 60px">
             <div class="alert alert-warning" role="alert">
-                <span style="line-height: 3;">There is no data in the current project.</span>
+                <span style="line-height: 3;">There is no data in the current project. Please create some records to populate the FAQ.</span>
             </div>
           </div>';
     }
@@ -180,14 +182,14 @@ if($has_permission){
 <div class="container">
     <div class="panel-group searchable" id="accordion">
         <?php
-        if(!empty($faqs)) {
+        if(count($faqs) > 0) {
             foreach ($faqs as $event) {
                 foreach ($help_category as $category_id => $category_value) {
                     $category_count = 0;
                     foreach ($event as $faq) {
-                        if ($faq['faq_category'] == $category_id && $faq['help_show_y'] != "0") {
+                        if ($faq['help_category'] == $category_id && $faq['help_show_y'] != "0") {
                             if ($category_count == 0) {
-                                echo '<div class="faqHeader">' . $help_category[$faq['faq_category']] . '</div>';
+                                echo '<div class="faqHeader">' . $help_category[$faq['help_category']] . '</div>';
                             }
                             $category_count++;
                             $collapse_id = "category_" . $category_id . "_question_" . $category_count;

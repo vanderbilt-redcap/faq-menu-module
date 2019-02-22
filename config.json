@@ -18,6 +18,7 @@
 			{
 				"name": "FAQ Builder",
 				"icon": "blog_blue",
+				"target": "_blank",
 				"url": "configure.php"
 			}
 		]
@@ -30,13 +31,13 @@
 	"project-settings": [
 		{
 			"key": "faq-btn",
-			"name": "If needed, upload the Data Dictionary",
+			"name": "When setting up <strong>FAQ Builder</strong> for the first time,<br> click the button to install the required data dictionary",
 			"type": "button",
 			"url":
 				{
-					"name": "Upload Data Dictionary",
+					"name": "Install Data Dictionary",
 					"value": "data_dictionary_upload.php?configure",
-					"message":"Data dictionary uploaded"
+					"message":"Data Dictionary installed"
 				}
 
 		},
