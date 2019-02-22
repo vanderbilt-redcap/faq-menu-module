@@ -25,7 +25,7 @@
 
 	"no-auth-pages":["configure","downloadFile","data_dictionary_upload"],
 
-	"description": "Customizable FAQ menu to show a searcheable list of questions and their answers. <br><br><span style='color:red'>**To download a <strong>Data Dictionary</strong> example click on <em>View Documentation</em>.</span>",
+	"description": "Creates a searchable single-page list of questions and their answers in the style of an FAQ (frequently asked questions) page. This module requires a specific data dictionary for the REDCap project (provided by module). Each question and answer pair is stored in a separate record within the project.",
 
 	"project-settings": [
 		{
