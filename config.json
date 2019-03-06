@@ -36,8 +36,7 @@
 			"url":
 				{
 					"name": "Install Data Dictionary",
-					"value": "data_dictionary_upload.php?configure",
-					"message":"Data Dictionary installed"
+					"value": "data_dictionary_upload.php?configure"
 				}
 
 		},

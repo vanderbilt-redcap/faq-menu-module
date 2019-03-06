@@ -95,14 +95,19 @@ else
     // SUCCESS - reload page so that menu form names will update (for development projects)
 
 //    print  "<br><br><img src='" . APP_PATH_IMAGES . "progress_circle.gif'> &nbsp;<b>{$lang['design_160']}</b><br>";
-    print  "<script type='text/javascript'>
-					window.location.href = '".$module->getUrl('configure.php?upload_success')."';
-				</script>";
+//    print  "<script type='text/javascript'>
+//					window.location.href = '".$module->getUrl('configure.php?upload_success')."';
+//				</script>";
+
+    echo json_encode(array(
+        'status' => 'success',
+        'message' => 'Data Dictionary installed'
+    ));
 
 }
 }else{
     print  "<script type='text/javascript'>
-					console.log('hey');
+					
 				</script>";
 }
 ?>
