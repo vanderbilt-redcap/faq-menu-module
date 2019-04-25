@@ -1,12 +1,15 @@
 <?php
-
+define('NOAUTH',true);
+$faq_privacy = $module->getProjectSetting('faq-privacy');
+if($faq_privacy != 'public') {
+    define('NOAUTH', false);
+}
 include_once(__DIR__ . "/functions.php");
 
 $faq_description = $module->getProjectSetting('faq-description');
 $faq_title = $module->getProjectSetting('faq-title');
 $faq_favicon = $module->getProjectSetting('faq-favicon');
 $faq_project = $module->getProjectSetting('faq-project');
-$faq_privacy = $module->getProjectSetting('faq-privacy');
 
 $faqs = \REDCap::getData(array('project_id'=>$module->getProjectId()),'array');
 
