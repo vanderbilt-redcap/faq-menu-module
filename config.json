@@ -19,7 +19,7 @@
 				"name": "FAQ Builder",
 				"icon": "blog_blue",
 				"target": "_blank",
-				"url": "configure.php"
+				"url": "configure.php?NOAUTH"
 			}
 		]
 	},
