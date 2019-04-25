@@ -97,42 +97,8 @@ $has_permission = false;
 
 if($faq_privacy == 'public'){
     $has_permission = true;
-}else if($faq_privacy == 'main'){
-    if(!defined('USERID')){
-        echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">Please log in REDCap to access this FAQ.</div></div>';
-        exit;
-    }else if(isUserExpiredOrSuspended(USERID, 'user_suspended_time') || isUserExpiredOrSuspended(USERID, 'user_expiration')) {
-        echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">This user is expired or suspended. Please contact an administrator.</div></div>';
-        exit;
-    }else{
-        $sql = "SELECT * FROM `redcap_user_rights` WHERE project_id='" . $_REQUEST['pid'] . "' AND username='" . USERID . "'";
-        $result = db_query($sql);
-        if (db_num_rows($result) > 0) {
-            $has_permission = true;
-        }
-    }
-}else if($faq_privacy == 'other') {
-    if(!defined('USERID')){
-        echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">Please log in REDCap to access this FAQ.</div></div>';
-        exit;
-    }else if(count($faq_project) == 0) {
-        echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">Please select a project(s) to give permissions to.</div></div>';
-        exit;
-    }else if(isUserExpiredOrSuspended(USERID, 'user_suspended_time') || isUserExpiredOrSuspended(USERID, 'user_expiration')) {
-        echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">This user is expired or suspended. Please contact an administrator.</div></div>';
-        exit;
-    }else{
-        foreach ($faq_project as $project) {
-            $sql = "SELECT * FROM `redcap_user_rights` WHERE project_id='" . $project . "' AND username='" . USERID . "'";
-            $result = db_query($sql);
-            if (db_num_rows($result) > 0) {
-                $has_permission = true;
-            }
-        }
-    }
 }else{
-    echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">This FAQ has not yet been set up. Please go to the “<strong>External Modules</strong>” menu and configure the FAQ Builder.</div></div>';
-    exit;
+    header('Location: '.$module->getUrl('private_config.php'));
 }
 
 
