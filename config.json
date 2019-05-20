@@ -6,7 +6,7 @@
 	"authors": [
 		{
 			"name": "Eva Bascompte Moragas",
-			"email": "datacore@vanderbilt.edu",
+			"email": "datacore@vumc.org",
 			"institution": "Vanderbilt University Medical Center"
 		}
 	],
@@ -99,5 +99,11 @@
 			]
 		}
 
-	]
+	],
+	"compatibility": {
+		"php-version-min": "5.5.0",
+		"php-version-max": "",
+		"redcap-version-min": "8.6.2",
+		"redcap-version-max": ""
+	}
 }
