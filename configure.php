@@ -3,19 +3,29 @@ include_once(__DIR__ . "/functions.php");
 
 $faq_description = $module->getProjectSetting('faq-description');
 $faq_title = $module->getProjectSetting('faq-title');
+$faq_title_tab = $module->getProjectSetting('faq-title-tab');
+$faq_logo = $module->getProjectSetting('faq-logo');
 $faq_favicon = $module->getProjectSetting('faq-favicon');
 $faq_project = $module->getProjectSetting('faq-project');
+$faq_search = $module->getProjectSetting('faq-search');
 $faq_privacy = $module->getProjectSetting('faq-privacy');
 
 $faqs = \REDCap::getData(array('project_id'=>$module->getProjectId()),'array');
 
 $help_category_aux = \REDCap::getDataDictionary($module->getProjectId(), 'array', false, 'help_category')['help_category']['select_choices_or_calculations'];
-
 $help_category_aux = explode('|',$help_category_aux);
 $help_category = array();
 foreach ($help_category_aux as $help){
     $values = explode(',',$help);
     $help_category[trim($values[0])]= trim($values[1]);
+}
+
+$help_tab_aux = \REDCap::getDataDictionary($module->getProjectId(), 'array', false, 'help_tab')['help_tab']['select_choices_or_calculations'];
+$help_tab_aux = explode('|',$help_tab_aux);
+$help_tab = array();
+foreach ($help_tab_aux as $help){
+    $values = explode(',',$help);
+    $help_tab[trim($values[0])]= trim($values[1]);
 }
 
 ?>
@@ -26,10 +36,11 @@ foreach ($help_category_aux as $help){
 <link rel="stylesheet" type="text/css" href="<?=$module->getUrl('css/bootstrap.min.css')?>">
 <link rel="stylesheet" type="text/css" href="<?=$module->getUrl('css/style.css')?>">
 <link type='text/css' href=<?=$module->getUrl('css/font-awesome.min.css')?> rel='stylesheet' media='screen' />
+<link type='text/css' href='<?=$module->getUrl('css/tabs-steps-menu.css')?>' rel='stylesheet' media='screen' />
 
 <link rel="icon" href="<?=$module->getUrl(getImageToDisplay($faq_favicon))?>">
 
-<title><?=$faq_title?></title>
+<title><?=$faq_title_tab?></title>
 
 <script>
     $(document).ready(function() {
@@ -51,16 +62,15 @@ foreach ($help_category_aux as $help){
                     $('.collapse.in').removeClass('in');
 
                     //Hide questions, will show result later
-                    $('.searchable .panel').hide();
+                     $('.searchable .panel').hide();
 
                     var regex = new RegExp(filter, 'i');
 
-                    var filterResult = $('.searchable .panel').filter(function() {
+                    var filterResult = $('.searchable .tabpanel .panel').filter(function() {
                         return regex.test($(this).text());
                     })
 
                     $('.faqHeader').hide();
-                    console.log(filterResult)
                     if (filterResult) {
                         if (filterResult.length != 0) {
                             $form.addClass("has-success");
@@ -102,9 +112,6 @@ if($faq_privacy == 'public'){
 }
 
 
-
-
-
 if(!$has_permission){
     echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">You don\'t have permissions to access this FAQ. Please contact an administrator.</div></div>';
     exit;
@@ -125,43 +132,82 @@ if($has_permission){
     }
 ?>
 
-<div class="container" style="margin-top: 60px">
-    <h3><?=$faq_title?></h3>
-    <p class="hub-title"><?=$faq_description?></p>
-</div>
-
-<?php if(count($faqs) > 0) {?>
-<div class="container">
-    <div class="form-group" id="filter-form">
-        <label for="filter">
-            Search for a Question
-        </label>
-        <input id="filter" type="text" class="form-control noEnterSubmit" placeholder="Enter a keyword or phrase" />
-        <small>
-            <span id="filter-help-block" class="help-block">
-              No filter applied.
-            </span>
-        </small>
+    <?php
+    if($faq_logo != ""){
+        ?>
+        <div class="container" style="margin-top: 60px">
+            <?php echo printFile($module,$faq_logo,'img');?>
+        </div>
+    <?php } ?>
+<?php
+if($faq_title != "" || $faq_description != ""){
+?>
+    <div class="container" style="margin-top: 60px">
+        <h3><?=$faq_title?></h3>
+        <p class="hub-title"><?=$faq_description?></p>
     </div>
-</div>
+<?php } ?>
+
+<?php if(count($faqs) > 0 && $faq_search == "Y") {?>
+    <div class="container" style="margin-top: 20px">
+        <div class="form-group" id="filter-form">
+            <label for="filter">
+                Search for a Question
+            </label>
+            <input id="filter" type="text" class="form-control noEnterSubmit" placeholder="Enter a keyword or phrase" />
+            <small>
+        <span id="filter-help-block" class="help-block">
+          No filter applied.
+        </span>
+            </small>
+        </div>
+    </div>
+<?php } ?>
+
+<?php if(count($help_tab)>0){ ?>
+    <div class="container" style="margin-top: 20px">
+        <ul class="nav nav-tabs">
+            <?php
+                $count = 0;
+                foreach ($help_tab as $index=>$tab){
+                    $active = '';
+                    if($count == 0){
+                        $active = 'active';
+                    }
+                    echo '<li class="nav-item '.$active.'"><a data-toggle="tab" href="#'.$index.'">'.$tab.'</a></li>';
+                    $count++;
+                }
+            ?>
+        </ul>
+    </div>
 <?php } ?>
 
 <div class="container">
     <div class="panel-group searchable" id="accordion">
         <?php
         if(count($faqs) > 0) {
-            foreach ($help_category as $category_id => $category_value) {
-                $category_count = 0;
-                foreach ($faqs as $event) {
-                    foreach ($event as $faq) {
-                        if ($faq['help_category'] == $category_id && $faq['help_show_y'] != "0") {
-                            if ($category_count == 0) {
-                                echo '<div class="faqHeader">' . $help_category[$faq['help_category']] . '</div>';
-                            }
-                            $category_count++;
-                            $collapse_id = "category_" . $category_id . "_question_" . $category_count;
+            echo '<div class="tab-content">';
+            $count = 0;
+            foreach ($help_tab as $index=>$tab) {
+                $active = '';
+                if($count == 0){
+                    $active = 'active';
+                }
+                echo '<div id="' . $index . '" class="tabpanel tab-pane fade in '.$active.'" role="tabpanel">';
+                echo '<div class="panel-group searchable" id="accordion-'.$index.'">';
+                foreach ($help_category as $category_id => $category_value) {
+                    $category_count = 0;
+                    foreach ($faqs as $event) {
+                        foreach ($event as $faq) {
+                            if($index == $faq['help_tab']) {
+                                if ($faq['help_category'] == $category_id && $faq['help_show_y'] != "0") {
+                                    if ($category_count == 0) {
+                                        echo '<div class="faqHeader">' . $help_category[$faq['help_category']] . '</div>';
+                                    }
+                                    $category_count++;
+                                    $collapse_id = "category_" . $category_id . "_question_" . $category_count."_tab_".$index;
 
-                            echo '<div class="panel panel-default">
+                                    echo '<div class="panel panel-default">
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
                                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#' . $collapse_id . '">' . $faq['help_question'] . '</a>
@@ -172,23 +218,29 @@ if($has_permission){
                                             <div>' . $faq['help_answer'] . '</div>';
 
 
-                            echo printFile($module,$faq['help_image'],'img');
-                            echo printFile($module,$faq['help_document'],'doc');
-                            echo printFile($module,$faq['help_document2'],'doc');
+                                    echo printFile($module, $faq['help_image'], 'img');
+                                    echo printFile($module, $faq['help_document'], 'doc');
+                                    echo printFile($module, $faq['help_document2'], 'doc');
 
-                            if ($faq['help_videoformat'] == '1') {
-                                echo '</br><div><iframe class="commentsform" id="redcap-video-frame" name="redcap-video-frame" src="' . $faq['help_videolink'] . '" width="520" height="345" frameborder="0" allowfullscreen style="display: block; margin: 0 auto;"></iframe></div>';
-                            } else {
-                                echo '</br><div class="help_embedcode">' . $faq['help_embedcode'] . '</div>';
+                                    if ($faq['help_videoformat'] == '1') {
+                                        echo '</br><div><iframe class="commentsform" id="redcap-video-frame" name="redcap-video-frame" src="' . $faq['help_videolink'] . '" width="520" height="345" frameborder="0" allowfullscreen style="display: block; margin: 0 auto;"></iframe></div>';
+                                    } else {
+                                        echo '</br><div class="help_embedcode">' . $faq['help_embedcode'] . '</div>';
+                                    }
+
+                                    echo '</div>
+                                            </div>
+                                        </div>';
+                                }
                             }
-
-                            echo '</div>
-                                </div>
-                            </div>';
                         }
                     }
                 }
+                echo '</div>';
+                echo '</div>';
+                $count++;
             }
+            echo '</div>';
         }
         ?>
     </div>

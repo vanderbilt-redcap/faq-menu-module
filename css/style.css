@@ -33,3 +33,19 @@
     font-size: 20px;
     margin: 20px;
 }
+.searchable .panel[role="tabpanel"]{
+    border:none;
+}
+
+
+
+/***Small Devices, Tablets**/
+@media (max-width:768px){
+    .container{
+        width: 100% !important;
+        font-size: 20px;
+    }
+    .panel-title {
+        font-size: 20px;
+    }
+}

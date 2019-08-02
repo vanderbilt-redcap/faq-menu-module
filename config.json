@@ -46,6 +46,16 @@
 			"type": "file"
 		},
 		{
+			"key": "faq-title-tab",
+			"name": "Tab title",
+			"type": "text"
+		},
+		{
+			"key": "faq-logo",
+			"name": "Logo for the page",
+			"type": "file"
+		},
+		{
 			"key": "faq-title",
 			"name": "Title at the top of the page",
 			"type": "text"
@@ -54,6 +64,21 @@
 			"key": "faq-description",
 			"name": "Descriptive text for the page",
 			"type": "textarea"
+		},
+		{
+			"key": "faq-search",
+			"name": "Display the search bar?<div><em>*This will allow the user to search all questions but it will only display the results of the current tab.</em></div>",
+			"choices": [
+				{
+					"name": "Yes",
+					"value": "Y"
+				},
+				{
+					"name": "No",
+					"value": "N"
+				}
+			],
+			"type":"radio"
 		},
 		{
 			"key": "faq-privacy-description",
