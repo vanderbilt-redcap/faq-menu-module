@@ -42,16 +42,8 @@
         width: 950px;
     }
 }
-
-@media (min-width: 1200px) {
-    .container {
-        width: 1170px !important;
-    }
-}
-@media (min-width: 992px) {
-    .container {
-        width: 970px;
-    }
+.top-screen{
+    margin-top: 60px;
 }
 /***Small Devices, Tablets**/
 @media (max-width:768px){
@@ -61,5 +53,14 @@
     }
     .panel-title {
         font-size: 20px;
+    }
+    img{
+        max-width: 340px;
+    }
+    .top-screen{
+        margin-top: 0;
+    }
+    .em-faqbuilder-tab-hidden-mobile{
+        display:none;
     }
 }

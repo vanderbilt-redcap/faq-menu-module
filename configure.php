@@ -29,6 +29,8 @@ foreach ($help_tab_aux as $help){
 }
 
 ?>
+<!-- To scale on mobile add this line -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <script type="text/javascript" src="<?=$module->getUrl('js/jquery-3.3.1.min.js')?>"></script>
 <script type="text/javascript" src="<?=$module->getUrl('js/bootstrap.min.js')?>"></script>
@@ -135,7 +137,7 @@ if($has_permission){
     <?php
     if($faq_logo != ""){
         ?>
-        <div class="container" style="margin-top: 60px">
+        <div class="container top-screen">
             <?php echo printFile($module,$faq_logo,'img');?>
         </div>
     <?php } ?>
