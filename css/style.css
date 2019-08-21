@@ -57,10 +57,20 @@
     img{
         max-width: 340px;
     }
+    .inside-panel-content img,.inside-panel-content a{
+        max-width: 300px;
+    }
     .top-screen{
         margin-top: 0;
     }
     .em-faqbuilder-tab-hidden-mobile{
         display:none;
     }
+}
+#save_and_stay {
+    display: block;
+    position: fixed;
+    z-index: 99;
+    padding: 10px;
+    margin-left: 110px;
 }

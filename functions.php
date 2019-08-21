@@ -40,9 +40,9 @@ function printFile($module,$edoc, $type){
         while ($row = db_fetch_assoc($q)) {
             $url = 'downloadFile.php?sname=' . $row['stored_name'] . '&file=' . urlencode($row['doc_name']);
             if($type == "img"){
-                $file = '</br><div><img src="' . $module->getUrl($url,true) . '" style="display: block; margin: 0 auto;"></div>';
+                $file = '</br><div class="inside-panel-content"><img src="' . $module->getUrl($url,true) . '" style="display: block; margin: 0 auto;"></div>';
             }else{
-                $file = '</br><div><a href="'.$module->getUrl($url,true).'" target="_blank"><span class="fa fa-file-o"></span> ' . $row['doc_name'] . '</a></div>';
+                $file = '</br><div class="inside-panel-content"><a href="'.$module->getUrl($url,true).'" target="_blank"><span class="fa fa-file-o"></span> ' . $row['doc_name'] . '</a></div>';
             }
 
         }
