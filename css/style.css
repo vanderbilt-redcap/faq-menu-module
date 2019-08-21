@@ -45,6 +45,9 @@
 .top-screen{
     margin-top: 60px;
 }
+.em-faqbuilder-tab-hidden-desktop{
+    display:none;
+}
 /***Small Devices, Tablets**/
 @media (max-width:768px){
     .container{
@@ -65,6 +68,9 @@
     }
     .em-faqbuilder-tab-hidden-mobile{
         display:none;
+    }
+    .em-faqbuilder-tab-hidden-desktop{
+        display: table;
     }
 }
 #save_and_stay {
