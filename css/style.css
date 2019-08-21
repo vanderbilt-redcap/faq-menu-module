@@ -57,7 +57,7 @@
     img{
         max-width: 340px;
     }
-    .inside-panel-content img,.inside-panel-content a{
+    .inside-panel-content img,.inside-panel-content a,.commentsform{
         max-width: 300px;
     }
     .top-screen{
