@@ -41,7 +41,7 @@ function printFile($module,$edoc, $type){
             $url = 'downloadFile.php?sname=' . $row['stored_name'] . '&file=' . urlencode($row['doc_name']);
             $base64 = base64_encode(file_get_contents(EDOC_PATH.$row['stored_name']));
             if($type == "img"){
-                $file = '<br/><div class="inside-panel-content"><img src="data:'.$row['mime_type'].'base64,' . $base64. '" style="display: block; margin: 0 auto;"></div>';
+                $file = '<br/><div class="inside-panel-content"><img src="data:'.$row['mime_type'].';base64,' . $base64. '" style="display: block; margin: 0 auto;"></div>';
             }else if($type == "logo"){
                 $file = '<img src="' . $module->getUrl($url,true). '" style="padding-bottom: 30px;width: 450px;">';
             }else if($type == "imgpdf"){
