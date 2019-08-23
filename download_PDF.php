@@ -1,6 +1,6 @@
 <?php
 include_once(__DIR__ . "/functions.php");
-require 'vendor/autoload.php';
+require __DIR__ .'/vendor/autoload.php';
 
 $faq_logo = $module->getProjectSetting('faq-logo');
 $faq_title = $module->getProjectSetting('faq-title');
