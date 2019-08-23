@@ -8,6 +8,7 @@ $faq_logo = $module->getProjectSetting('faq-logo');
 $faq_favicon = $module->getProjectSetting('faq-favicon');
 $faq_project = $module->getProjectSetting('faq-project');
 $faq_search = $module->getProjectSetting('faq-search');
+$faq_pdf = $module->getProjectSetting('faq-pdf');
 $faq_privacy = $module->getProjectSetting('faq-privacy');
 
 $faqs = \REDCap::getData(array('project_id'=>$module->getProjectId()),'array');
@@ -134,19 +135,28 @@ if($has_permission){
     }
 ?>
 
-    <?php
+<?php
     if($faq_logo != ""){
         ?>
         <div class="container top-screen">
             <?php echo printFile($module,$faq_logo,'img');?>
         </div>
     <?php } ?>
+
 <?php
 if($faq_title != "" || $faq_description != ""){
 ?>
     <div class="container" style="margin-top: 60px">
         <h3><?=$faq_title?></h3>
         <p class="hub-title"><?=$faq_description?></p>
+    </div>
+<?php } ?>
+
+<?php if(count($faqs) > 0 && $faq_pdf == "Y") {?>
+    <div class="container em-faqbuilder-tab-hidden-mobile">
+        <ul class="list-inline pull-right" style="    padding-right: 10%;">
+            <li><a href="<?=$module->getUrl('download_PDF.php')?>" class="btn btn-default saveAndContinue" id="save_and_stay" name="save_and_stay" ><span class="fa fa-arrow-down"></span> PDF</a></li>
+        </ul>
     </div>
 <?php } ?>
 
@@ -247,4 +257,10 @@ if($faq_title != "" || $faq_description != ""){
         ?>
     </div>
 </div>
+<?php } ?>
+
+<?php if(count($faqs) > 0 && $faq_pdf == "Y") {?>
+    <div class="container em-faqbuilder-tab-hidden-desktop" style="padding-bottom:30px;padding-top:20px;">
+        <a href="<?=$module->getUrl('download_PDF.php')?>" class="btn btn-default saveAndContinue" style="width: 100%;"><span class="fa fa-arrow-down"></span> PDF</a>
+    </div>
 <?php } ?>

@@ -81,6 +81,21 @@
 			"type":"radio"
 		},
 		{
+			"key": "faq-pdf",
+			"name": "Display the download PDF buttom?<div><em>*This will allow the user to all questions and answers in a PDF format.</em></div>",
+			"choices": [
+				{
+					"name": "Yes",
+					"value": "Y"
+				},
+				{
+					"name": "No",
+					"value": "N"
+				}
+			],
+			"type":"radio"
+		},
+		{
 			"key": "faq-privacy-description",
 			"name": "<div>Select a privacy type for the FAQ builder:</div><br><div class='alert alert-info' style='border-color:#bce8f1 !important'><ul><li><strong>Public</strong> (no login required; anyone with the link can view/access the FAQ page)</li><li><strong>This Project's users only</strong> (REDCap login required; only users on this project can access the FAQ page)</li><li><strong>A different Project's users</strong> (REDCap login required; only users from another project can access the FAQ page)</li></ul></div>",
 			"type": "descriptive"
