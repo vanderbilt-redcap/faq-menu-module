@@ -3,7 +3,7 @@
 function getImageToDisplay($edoc){
     $img_logo = '';
     if($edoc != ''){
-        $sql = "SELECT stored_name,doc_name,doc_size FROM redcap_edocs_metadata WHERE doc_id=" . $edoc;
+        $sql = "SELECT stored_name,doc_name,doc_size FROM redcap_edocs_metadata WHERE doc_id='" . db_escape($edoc)."'";
         $q = db_query($sql);
 
         if ($error = db_error()) {
@@ -19,7 +19,7 @@ function getImageToDisplay($edoc){
 }
 
 function isUserExpiredOrSuspended($username,$field){
-    $sql = "SELECT * FROM redcap_user_information WHERE username = '".$username."' AND ".$field." IS NOT NULL";
+    $sql = "SELECT * FROM redcap_user_information WHERE username = '".db_escape($username)."' AND ".$field." IS NOT NULL";
     $result = db_query($sql);
     if (db_num_rows($result) > 0) {
         return true;
@@ -30,7 +30,7 @@ function isUserExpiredOrSuspended($username,$field){
 function printFile($module,$edoc, $type){
     $file = "";
     if($edoc != ""){
-        $sql = "SELECT stored_name,doc_name,doc_size,mime_type FROM redcap_edocs_metadata WHERE doc_id=" . $edoc;
+        $sql = "SELECT stored_name,doc_name,doc_size,mime_type FROM redcap_edocs_metadata WHERE doc_id='" . db_escape($edoc)."'";
         $q = db_query($sql);
 
         if ($error = db_error()) {

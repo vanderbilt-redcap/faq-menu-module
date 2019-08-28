@@ -105,7 +105,7 @@ if($faq_privacy == 'public'){
         echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">This user is expired or suspended. Please contact an administrator.</div></div>';
         exit;
     }else{
-        $sql = "SELECT * FROM `redcap_user_rights` WHERE project_id='" . $_REQUEST['pid'] . "' AND username='" . USERID . "'";
+        $sql = "SELECT * FROM `redcap_user_rights` WHERE project_id='" . db_escape($_REQUEST['pid']) . "' AND username='" . db_escape(USERID) . "'";
         $result = db_query($sql);
         if (db_num_rows($result) > 0) {
             $has_permission = true;
@@ -123,7 +123,7 @@ if($faq_privacy == 'public'){
         exit;
     }else{
         foreach ($faq_project as $project) {
-            $sql = "SELECT * FROM `redcap_user_rights` WHERE project_id='" . $project . "' AND username='" . USERID . "'";
+            $sql = "SELECT * FROM `redcap_user_rights` WHERE project_id='" . db_escape($project) . "' AND username='" . db_escape(USERID) . "'";
             $result = db_query($sql);
             if (db_num_rows($result) > 0) {
                 $has_permission = true;
