@@ -155,7 +155,7 @@ if($faq_title != "" || $faq_description != ""){
 <?php if(count($faqs) > 0 && $faq_pdf == "Y") {?>
     <div class="container em-faqbuilder-tab-hidden-mobile">
         <ul class="list-inline pull-right" style="    padding-right: 10%;">
-            <li><a href="<?=$module->getUrl('download_PDF.php')?>" class="btn btn-default saveAndContinue" id="save_and_stay" name="save_and_stay" ><span class="fa fa-arrow-down"></span> PDF</a></li>
+            <li><a href="<?=$module->getUrl('download_PDF.php',true)?>" class="btn btn-default saveAndContinue" id="save_and_stay" name="save_and_stay" ><span class="fa fa-arrow-down"></span> PDF</a></li>
         </ul>
     </div>
 <?php } ?>
@@ -261,6 +261,6 @@ if($faq_title != "" || $faq_description != ""){
 
 <?php if(count($faqs) > 0 && $faq_pdf == "Y") {?>
     <div class="container em-faqbuilder-tab-hidden-desktop" style="padding-bottom:30px;padding-top:20px;">
-        <a href="<?=$module->getUrl('download_PDF.php')?>" class="btn btn-default saveAndContinue" style="width: 100%;"><span class="fa fa-arrow-down"></span> PDF</a>
+        <a href="<?=$module->getUrl('download_PDF.php',true)?>" class="btn btn-default saveAndContinue" style="width: 100%;"><span class="fa fa-arrow-down"></span> PDF</a>
     </div>
 <?php } ?>
