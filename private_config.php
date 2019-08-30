@@ -3,14 +3,17 @@ include_once(__DIR__ . "/functions.php");
 
 $faq_description = $module->getProjectSetting('faq-description');
 $faq_title = $module->getProjectSetting('faq-title');
+$faq_title_tab = $module->getProjectSetting('faq-title-tab');
+$faq_logo = $module->getProjectSetting('faq-logo');
 $faq_favicon = $module->getProjectSetting('faq-favicon');
 $faq_project = $module->getProjectSetting('faq-project');
+$faq_search = $module->getProjectSetting('faq-search');
+$faq_pdf = $module->getProjectSetting('faq-pdf');
 $faq_privacy = $module->getProjectSetting('faq-privacy');
 
 $faqs = \REDCap::getData(array('project_id'=>$module->getProjectId()),'array');
 
 $help_category_aux = \REDCap::getDataDictionary($module->getProjectId(), 'array', false, 'help_category')['help_category']['select_choices_or_calculations'];
-
 $help_category_aux = explode('|',$help_category_aux);
 $help_category = array();
 foreach ($help_category_aux as $help){
@@ -18,79 +21,91 @@ foreach ($help_category_aux as $help){
     $help_category[trim($values[0])]= trim($values[1]);
 }
 
+$help_tab_aux = \REDCap::getDataDictionary($module->getProjectId(), 'array', false, 'help_tab')['help_tab']['select_choices_or_calculations'];
+$help_tab_aux = explode('|',$help_tab_aux);
+$help_tab = array();
+foreach ($help_tab_aux as $help){
+    $values = explode(',',$help);
+    $help_tab[trim($values[0])]= trim($values[1]);
+}
+
 ?>
 
-    <script type="text/javascript" src="<?=$module->getUrl('js/jquery-3.3.1.min.js')?>"></script>
-    <script type="text/javascript" src="<?=$module->getUrl('js/bootstrap.min.js')?>"></script>
+<!-- To scale on mobile add this line -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" type="text/css" href="<?=$module->getUrl('css/bootstrap.min.css')?>">
-    <link rel="stylesheet" type="text/css" href="<?=$module->getUrl('css/style.css')?>">
-    <link type='text/css' href=<?=$module->getUrl('css/font-awesome.min.css')?> rel='stylesheet' media='screen' />
+<script type="text/javascript" src="<?=$module->getUrl('js/jquery-3.3.1.min.js')?>"></script>
+<script type="text/javascript" src="<?=$module->getUrl('js/bootstrap.min.js')?>"></script>
 
-    <link rel="icon" href="<?=$module->getUrl(getImageToDisplay($faq_favicon))?>">
+<link rel="stylesheet" type="text/css" href="<?=$module->getUrl('css/bootstrap.min.css')?>">
+<link rel="stylesheet" type="text/css" href="<?=$module->getUrl('css/style.css')?>">
+<link type='text/css' href=<?=$module->getUrl('css/font-awesome.min.css')?> rel='stylesheet' media='screen' />
+<link type='text/css' href='<?=$module->getUrl('css/tabs-steps-menu.css')?>' rel='stylesheet' media='screen' />
 
-    <title><?=$faq_title?></title>
+<link rel="icon" href="<?=$module->getUrl(getImageToDisplay($faq_favicon))?>">
 
-    <script>
-        $(document).ready(function() {
-            (function($) {
-                var $form = $('#filter-form');
-                var $helpBlock = $("#filter-help-block");
+<title><?=$faq_title_tab?></title>
 
-                //Watch for user typing to refresh the filter
-                $('#filter').keyup(function() {
-                    var filter = $(this).val();
-                    $form.removeClass("has-success has-error");
 
-                    if (filter == "") {
-                        $helpBlock.text("No filter applied.")
-                        $('.searchable .panel').show();
-                        $('.faqHeader').show();
-                    } else {
-                        //Close any open panels
-                        $('.collapse.in').removeClass('in');
+<script>
+    $(document).ready(function() {
+        (function($) {
+            var $form = $('#filter-form');
+            var $helpBlock = $("#filter-help-block");
 
-                        //Hide questions, will show result later
-                        $('.searchable .panel').hide();
+            //Watch for user typing to refresh the filter
+            $('#filter').keyup(function() {
+                var filter = $(this).val();
+                $form.removeClass("has-success has-error");
 
-                        var regex = new RegExp(filter, 'i');
+                if (filter == "") {
+                    $helpBlock.text("No filter applied.")
+                    $('.searchable .panel').show();
+                    $('.faqHeader').show();
+                } else {
+                    //Close any open panels
+                    $('.collapse.in').removeClass('in');
 
-                        var filterResult = $('.searchable .panel').filter(function() {
-                            return regex.test($(this).text());
-                        })
+                    //Hide questions, will show result later
+                    $('.searchable .panel').hide();
 
-                        $('.faqHeader').hide();
-                        console.log(filterResult)
-                        if (filterResult) {
-                            if (filterResult.length != 0) {
-                                $form.addClass("has-success");
-                                $helpBlock.text(filterResult.length + " question(s) found.");
-                                filterResult.show();
-                            } else {
-                                $form.addClass("has-error").removeClass("has-success");
-                                $helpBlock.text("No questions found.");
-                            }
+                    var regex = new RegExp(filter, 'i');
 
+                    var filterResult = $('.searchable .tabpanel .panel').filter(function() {
+                        return regex.test($(this).text());
+                    })
+
+                    $('.faqHeader').hide();
+                    if (filterResult) {
+                        if (filterResult.length != 0) {
+                            $form.addClass("has-success");
+                            $helpBlock.text(filterResult.length + " question(s) found.");
+                            filterResult.show();
                         } else {
                             $form.addClass("has-error").removeClass("has-success");
                             $helpBlock.text("No questions found.");
                         }
+
+                    } else {
+                        $form.addClass("has-error").removeClass("has-success");
+                        $helpBlock.text("No questions found.");
                     }
-                })
+                }
+            })
 
-            }($));
-        });
+        }($));
+    });
 
-        //
-        //  This function disables the enter button
-        //  because we're using a form element to filter, if a user
-        //  pressed enter, it would 'submit' a form and reload the page
-        //  Probably not needed here on Codepen, but necessary elsewhere
-        //
-        $('.noEnterSubmit').keypress(function(e) {
-            if (e.which == 13) e.preventDefault();
-        });
-    </script>
+    //
+    //  This function disables the enter button
+    //  because we're using a form element to filter, if a user
+    //  pressed enter, it would 'submit' a form and reload the page
+    //  Probably not needed here on Codepen, but necessary elsewhere
+    //
+    $('.noEnterSubmit').keypress(function(e) {
+        if (e.which == 13) e.preventDefault();
+    });
+</script>
 
 <?php
 $has_permission = false;
@@ -159,24 +174,63 @@ if($has_permission){
     }
     ?>
 
-    <div class="container" style="margin-top: 60px">
-        <h3><?=$faq_title?></h3>
-        <p class="hub-title"><?=$faq_description?></p>
-    </div>
 
-    <?php if(count($faqs) > 0) {?>
-        <div class="container">
+    <?php
+    if($faq_logo != ""){
+        ?>
+        <div class="container top-screen">
+            <?php echo printFile($module,$faq_logo,'img');?>
+        </div>
+    <?php } ?>
+
+    <?php
+    if($faq_title != "" || $faq_description != ""){
+        ?>
+        <div class="container" style="margin-top: 60px">
+            <h3><?=$faq_title?></h3>
+            <p class="hub-title"><?=$faq_description?></p>
+        </div>
+    <?php } ?>
+
+    <?php if(count($faqs) > 0 && $faq_pdf == "Y") {?>
+        <div class="container em-faqbuilder-tab-hidden-mobile">
+            <ul class="list-inline pull-right" style="    padding-right: 10%;">
+                <li><a href="<?=$module->getUrl('download_PDF.php')?>" class="btn btn-default saveAndContinue" id="save_and_stay" name="save_and_stay" ><span class="fa fa-arrow-down"></span> PDF</a></li>
+            </ul>
+        </div>
+    <?php } ?>
+
+    <?php if(count($faqs) > 0 && $faq_search == "Y") {?>
+        <div class="container" style="margin-top: 20px">
             <div class="form-group" id="filter-form">
                 <label for="filter">
                     Search for a Question
                 </label>
                 <input id="filter" type="text" class="form-control noEnterSubmit" placeholder="Enter a keyword or phrase" />
                 <small>
-            <span id="filter-help-block" class="help-block">
-              No filter applied.
-            </span>
+        <span id="filter-help-block" class="help-block">
+          No filter applied.
+        </span>
                 </small>
             </div>
+        </div>
+    <?php } ?>
+
+    <?php if(count($help_tab)>0){ ?>
+        <div class="container" style="margin-top: 20px">
+            <ul class="nav nav-tabs">
+                <?php
+                $count = 0;
+                foreach ($help_tab as $index=>$tab){
+                    $active = '';
+                    if($count == 0){
+                        $active = 'active';
+                    }
+                    echo '<li class="nav-item '.$active.'"><a data-toggle="tab" href="#'.$index.'">'.$tab.'</a></li>';
+                    $count++;
+                }
+                ?>
+            </ul>
         </div>
     <?php } ?>
 
@@ -184,18 +238,28 @@ if($has_permission){
         <div class="panel-group searchable" id="accordion">
             <?php
             if(count($faqs) > 0) {
-                foreach ($help_category as $category_id => $category_value) {
-                    $category_count = 0;
-                    foreach ($faqs as $event) {
-                        foreach ($event as $faq) {
-                            if ($faq['help_category'] == $category_id && $faq['help_show_y'] != "0") {
-                                if ($category_count == 0) {
-                                    echo '<div class="faqHeader">' . $help_category[$faq['help_category']] . '</div>';
-                                }
-                                $category_count++;
-                                $collapse_id = "category_" . $category_id . "_question_" . $category_count;
+                echo '<div class="tab-content">';
+                $count = 0;
+                foreach ($help_tab as $index=>$tab) {
+                    $active = '';
+                    if($count == 0){
+                        $active = 'active';
+                    }
+                    echo '<div id="' . $index . '" class="tabpanel tab-pane fade in '.$active.'" role="tabpanel">';
+                    echo '<div class="panel-group searchable" id="accordion-'.$index.'">';
+                    foreach ($help_category as $category_id => $category_value) {
+                        $category_count = 0;
+                        foreach ($faqs as $event) {
+                            foreach ($event as $faq) {
+                                if($index == $faq['help_tab']) {
+                                    if ($faq['help_category'] == $category_id && $faq['help_show_y'] != "0") {
+                                        if ($category_count == 0) {
+                                            echo '<div class="faqHeader">' . $help_category[$faq['help_category']] . '</div>';
+                                        }
+                                        $category_count++;
+                                        $collapse_id = "category_" . $category_id . "_question_" . $category_count."_tab_".$index;
 
-                                echo '<div class="panel panel-default">
+                                        echo '<div class="panel panel-default">
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
                                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#' . $collapse_id . '">' . $faq['help_question'] . '</a>
@@ -206,25 +270,37 @@ if($has_permission){
                                             <div>' . $faq['help_answer'] . '</div>';
 
 
-                                echo printFile($module,$faq['help_image'],'img');
-                                echo printFile($module,$faq['help_document'],'doc');
-                                echo printFile($module,$faq['help_document2'],'doc');
+                                        echo printFile($module, $faq['help_image'], 'img');
+                                        echo printFile($module, $faq['help_document'], 'doc');
+                                        echo printFile($module, $faq['help_document2'], 'doc');
 
-                                if ($faq['help_videoformat'] == '1') {
-                                    echo '</br><div><iframe class="commentsform" id="redcap-video-frame" name="redcap-video-frame" src="' . $faq['help_videolink'] . '" width="520" height="345" frameborder="0" allowfullscreen style="display: block; margin: 0 auto;"></iframe></div>';
-                                } else {
-                                    echo '</br><div class="help_embedcode">' . $faq['help_embedcode'] . '</div>';
+                                        if ($faq['help_videoformat'] == '1') {
+                                            echo '</br><div><iframe class="commentsform" id="redcap-video-frame" name="redcap-video-frame" src="' . $faq['help_videolink'] . '" width="520" height="345" frameborder="0" allowfullscreen style="display: block; margin: 0 auto;"></iframe></div>';
+                                        } else {
+                                            echo '</br><div class="help_embedcode">' . $faq['help_embedcode'] . '</div>';
+                                        }
+
+                                        echo '</div>
+                                            </div>
+                                        </div>';
+                                    }
                                 }
-
-                                echo '</div>
-                                </div>
-                            </div>';
                             }
                         }
                     }
+                    echo '</div>';
+                    echo '</div>';
+                    $count++;
                 }
+                echo '</div>';
             }
             ?>
         </div>
     </div>
+
+    <?php if(count($faqs) > 0 && $faq_pdf == "Y") {?>
+        <div class="container em-faqbuilder-tab-hidden-desktop" style="padding-bottom:30px;padding-top:20px;">
+            <a href="<?=$module->getUrl('download_PDF.php')?>" class="btn btn-default saveAndContinue" style="width: 100%;"><span class="fa fa-arrow-down"></span> PDF</a>
+        </div>
+    <?php } ?>
 <?php } ?>
