@@ -19,12 +19,16 @@ function getImageToDisplay($edoc){
 }
 
 function isUserExpiredOrSuspended($username,$field){
-    $sql = "SELECT * FROM redcap_user_information WHERE username = '".db_escape($username)."' AND ".$field." IS NOT NULL";
+    $sql = "SELECT * FROM redcap_user_information WHERE username = '".db_escape($username)."'";
     $result = db_query($sql);
-    if (db_num_rows($result) > 0) {
-        return true;
+    while ($row = db_fetch_assoc($result)) {
+        if($row[$field] == null || $row[$field] == "" || strtotime($row[$field]) > strtotime(date("Y-m-d"))) {
+            #Not Expired
+            return false;
+        }
     }
-    return false;
+    #User Expired
+    return true;
 }
 
 function printFile($module,$edoc, $type){

@@ -1,5 +1,10 @@
 {
     "require": {
         "dompdf/dompdf": "^0.8.3"
+    },
+    "config": {
+        "platform": {
+            "php": "7.3.29"
+        }
     }
 }
