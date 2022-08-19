@@ -1,10 +1,10 @@
 <?php
-$filename = $_REQUEST['file'];
-$sname = $_REQUEST['sname'];
+$filename = urlencode($_REQUEST['file']);
+$sname = htmlentities($_REQUEST['sname'],ENT_QUOTES);
 
 header('Content-type: application/pdf');
 header('Content-Disposition: attachment; filename="'.$filename.'"');
 header('Content-Transfer-Encoding: binary');
 header('Accept-Ranges: bytes');
-@readfile(EDOC_PATH.$sname);
+@readfile($module->getSafePath($sname, EDOC_PATH));
 ?>
