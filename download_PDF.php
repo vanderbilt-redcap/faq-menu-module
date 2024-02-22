@@ -1,4 +1,5 @@
 <?php
+namespace Vanderbilt\FaqMenuExternalModule;
 include_once(__DIR__ . "/functions.php");
 require __DIR__ .'/vendor/autoload.php';
 
@@ -45,13 +46,13 @@ foreach ($help_tab as $index=>$tab) {
                         $first_page .= '<tr><td><ul><li>' . $faq['help_question'] . '</li></ul></td></tr>';
                         $first_page .= '<tr><td style="padding-left: 40px;">' . $faq['help_answer'] . '</td></tr>';
                         if($faq['help_image'] != ""){
-                            $first_page .= '<tr><td style="padding-left: 40px;"><br/>' .printFile($module, $faq['help_image'], 'imgpdf'). '<br/></td></tr>';
+                            $first_page .= '<tr><td style="padding-left: 40px;"><br/>' .\Vanderbilt\FaqMenuExternalModule\printFile($module, $faq['help_image'], 'imgpdf').'<br/></td></tr>';
                         }
                         if($faq['help_document'] != ""){
-                            $first_page .= '<tr><td style="padding-left: 40px;">' .printFile($module, $faq['help_document'], 'doc'). '</td></tr>';
+                            $first_page .= '<tr><td style="padding-left: 40px;">' .\Vanderbilt\FaqMenuExternalModule\printFile($module, $faq['help_document'], 'doc'). '</td></tr>';
                         }
                         if($faq['help_document2'] != ""){
-                            $first_page .= '<tr><td style="padding-left: 40px;">' .printFile($module, $faq['help_document2'], 'doc'). '</td></tr>';
+                            $first_page .= '<tr><td style="padding-left: 40px;">' .\Vanderbilt\FaqMenuExternalModule\printFile($module, $faq['help_document2'], 'doc'). '</td></tr>';
                         }
 
                         if ($faq['help_videoformat'] == '1') {
@@ -76,7 +77,7 @@ $page_num = '<style>.footer .page-number:after { content: counter(page); } .foot
 
 $html_pdf = "<html><body style='font-family:\"Calibri\";font-size:10pt;'>".$page_num
     ."<div class='footer' style='left: 600px;'><span class='page-number'>Page </span></div>"
-    ."<div class='mainPDF'><table style='width: 100%;padding-top: 30px'><tr><td align='center'>".printFile($module,$faq_logo,'logo')."</td></tr></table></div>"
+    ."<div class='mainPDF'><table style='width: 100%;padding-top: 30px'><tr><td align='center'>".\Vanderbilt\FaqMenuExternalModule\printFile($module,$faq_logo,'logo')."</td></tr></table></div>"
     ."<div class='mainPDF'><table style='width: 100%;'><tr><td align='center'>".$faq_title."</td></tr></table>".$first_page."</div>"
     ."</body></html>";
 
@@ -90,13 +91,13 @@ $filePath = EDOC_PATH.$storedName;
 $dompdf = new \Dompdf\Dompdf();
 $dompdf->loadHtml($html_pdf);
 $dompdf->setPaper('A4', 'portrait');
-#to enable images from url
-$dompdf->output(['isRemoteEnabled' => true]);
+$options = $dompdf->getOptions();
+$options->setChroot(EDOC_PATH);
+$dompdf->setOptions($options);
 ob_start();
 $dompdf->render();
 //#Download option
 $dompdf->stream($filename);
 $filesize = file_put_contents(EDOC_PATH.$storedName, ob_get_contents());
-
 
 ?>

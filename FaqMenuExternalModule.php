@@ -1,10 +1,11 @@
 <?php
 namespace Vanderbilt\FaqMenuExternalModule;
 
-class FaqMenuExternalModule extends \ExternalModules\AbstractExternalModule{
+use Exception;
+use REDCap;
+use ExternalModules\AbstractExternalModule;
+use ExternalModules\ExternalModules;
 
-    public function __construct(){
-        parent::__construct();
-    }
+class FaqMenuExternalModule extends AbstractExternalModule{
 
 }

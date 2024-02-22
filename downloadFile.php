@@ -1,4 +1,5 @@
 <?php
+namespace Vanderbilt\FaqMenuExternalModule;
 $filename = urlencode($_REQUEST['file']);
 $sname = htmlentities($_REQUEST['sname'],ENT_QUOTES);
 

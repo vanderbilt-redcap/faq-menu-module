@@ -1,4 +1,5 @@
 <?php
+namespace Vanderbilt\FaqMenuExternalModule;
 include_once(__DIR__ . "/functions.php");
 
 $faq_description = $module->getProjectSetting('faq-description');
@@ -28,7 +29,6 @@ foreach ($help_tab_aux as $help){
     $values = explode(',',$help);
     $help_tab[trim($values[0])]= trim($values[1]);
 }
-
 ?>
 <!-- To scale on mobile add this line -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -41,7 +41,7 @@ foreach ($help_tab_aux as $help){
 <link type='text/css' href=<?=$module->getUrl('css/font-awesome.min.css')?> rel='stylesheet' media='screen' />
 <link type='text/css' href='<?=$module->getUrl('css/tabs-steps-menu.css')?>' rel='stylesheet' media='screen' />
 
-<link rel="icon" href="<?=$module->getUrl(getImageToDisplay($faq_favicon))?>">
+<link rel="icon" href="<?=$module->getUrl(\Vanderbilt\FaqMenuExternalModule\getImageToDisplay($faq_favicon))?>">
 
 <title><?=$faq_title_tab?></title>
 
@@ -139,7 +139,7 @@ if($has_permission){
     if($faq_logo != ""){
         ?>
         <div class="container top-screen">
-            <?php echo printFile($module,$faq_logo,'img');?>
+            <?php echo filter_tags(printFile($module,$faq_logo,'img'));?>
         </div>
     <?php } ?>
 
@@ -186,7 +186,7 @@ if($faq_title != "" || $faq_description != ""){
                     if($count == 0){
                         $active = 'active';
                     }
-                    echo '<li class="nav-item '.$active.'"><a data-toggle="tab" href="#'.$index.'">'.$tab.'</a></li>';
+                    echo '<li class="nav-item '.htmlentities($active,ENT_QUOTES).'"><a data-toggle="tab" href="#'.htmlentities($index,ENT_QUOTES).'">'.filter_tags($tab).'</a></li>';
                     $count++;
                 }
             ?>
@@ -205,7 +205,7 @@ if($faq_title != "" || $faq_description != ""){
                 if($count == 0){
                     $active = 'active';
                 }
-                echo '<div id="' . $index . '" class="tabpanel tab-pane fade in '.$active.'" role="tabpanel">';
+                echo '<div id="' . htmlentities($index,ENT_QUOTES) . '" class="tabpanel tab-pane fade in '.htmlentities($active,ENT_QUOTES).'" role="tabpanel">';
                 echo '<div class="panel-group searchable" id="accordion-'.$index.'">';
                 foreach ($help_category as $category_id => $category_value) {
                     $category_count = 0;
@@ -214,7 +214,7 @@ if($faq_title != "" || $faq_description != ""){
                             if($index == $faq['help_tab']) {
                                 if ($faq['help_category'] == $category_id && $faq['help_show_y'] != "0") {
                                     if ($category_count == 0) {
-                                        echo '<div class="faqHeader">' . $help_category[$faq['help_category']] . '</div>';
+                                        echo '<div class="faqHeader">' . htmlentities($help_category[$faq['help_category']],ENT_QUOTES) . '</div>';
                                     }
                                     $category_count++;
                                     $collapse_id = "category_" . $category_id . "_question_" . $category_count."_tab_".$index;
@@ -222,22 +222,22 @@ if($faq_title != "" || $faq_description != ""){
                                     echo '<div class="panel panel-default">
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
-                                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#' . $collapse_id . '">' . $faq['help_question'] . '</a>
+                                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#' . htmlentities($collapse_id,ENT_QUOTES ). '">' . filter_tags($faq['help_question']) . '</a>
                                         </h4>
                                     </div>
-                                    <div id="' . $collapse_id . '" class="panel-collapse collapse">
+                                    <div id="' . htmlentities($collapse_id,ENT_QUOTES) . '" class="panel-collapse collapse">
                                         <div class="panel-body">
-                                            <div>' . $faq['help_answer'] . '</div>';
+                                            <div>' . filter_tags($faq['help_answer']) . '</div>';
 
 
-                                    echo printFile($module, $faq['help_image'], 'img');
-                                    echo printFile($module, $faq['help_document'], 'doc');
-                                    echo printFile($module, $faq['help_document2'], 'doc');
+                                    echo filter_tags(\Vanderbilt\FaqMenuExternalModule\printFile($module, $faq['help_image'], 'img'));
+                                    echo filter_tags(\Vanderbilt\FaqMenuExternalModule\printFile($module, $faq['help_document'], 'doc'));
+                                    echo filter_tags(\Vanderbilt\FaqMenuExternalModule\printFile($module, $faq['help_document2'], 'doc'));
 
                                     if ($faq['help_videoformat'] == '1') {
-                                        echo '</br><div><iframe class="commentsform" id="redcap-video-frame" name="redcap-video-frame" src="' . $faq['help_videolink'] . '" width="520" height="345" frameborder="0" allowfullscreen style="display: block; margin: 0 auto;"></iframe></div>';
+                                        echo '</br><div><iframe class="commentsform" id="redcap-video-frame" name="redcap-video-frame" src="' . htmlentities($faq['help_videolink'],ENT_QUOTES) . '" width="520" height="345" frameborder="0" allowfullscreen style="display: block; margin: 0 auto;"></iframe></div>';
                                     } else {
-                                        echo '</br><div class="help_embedcode">' . $faq['help_embedcode'] . '</div>';
+                                        echo '</br><div class="help_embedcode">' . htmlentities($faq['help_embedcode'],ENT_QUOTES) . '</div>';
                                     }
 
                                     echo '</div>
