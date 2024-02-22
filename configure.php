@@ -237,7 +237,8 @@ if($faq_title != "" || $faq_description != ""){
                                     if ($faq['help_videoformat'] == '1') {
                                         echo '</br><div><iframe class="commentsform" id="redcap-video-frame" name="redcap-video-frame" src="' . htmlentities($faq['help_videolink'],ENT_QUOTES) . '" width="520" height="345" frameborder="0" allowfullscreen style="display: block; margin: 0 auto;"></iframe></div>';
                                     } else {
-                                        echo '</br><div class="help_embedcode">' . htmlentities($faq['help_embedcode'],ENT_QUOTES) . '</div>';
+                                        error_log($faq['help_embedcode']);
+                                        echo '</br><div class="help_embedcode">' . htmlspecialchars_decode($module->escape($faq['help_embedcode'])) . '</div>';
                                     }
 
                                     echo '</div>
