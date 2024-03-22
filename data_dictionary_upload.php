@@ -1,5 +1,5 @@
 <?php
-
+namespace Vanderbilt\FaqMenuExternalModule;
 if(array_key_exists('configure',$_REQUEST)){
 
 global $Proj,$lang;

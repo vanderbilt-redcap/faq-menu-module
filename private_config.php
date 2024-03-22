@@ -1,4 +1,5 @@
 <?php
+namespace Vanderbilt\FaqMenuExternalModule;
 include_once(__DIR__ . "/functions.php");
 
 $faq_description = $module->getProjectSetting('faq-description');
@@ -10,6 +11,7 @@ $faq_project = $module->getProjectSetting('faq-project');
 $faq_search = $module->getProjectSetting('faq-search');
 $faq_pdf = $module->getProjectSetting('faq-pdf');
 $faq_privacy = $module->getProjectSetting('faq-privacy');
+$project_id = (int)$_REQUEST['pid'];
 
 $faqs = \REDCap::getData(array('project_id'=>$module->getProjectId()),'array');
 
@@ -28,7 +30,6 @@ foreach ($help_tab_aux as $help){
     $values = explode(',',$help);
     $help_tab[trim($values[0])]= trim($values[1]);
 }
-
 ?>
 
 <!-- To scale on mobile add this line -->
@@ -42,7 +43,7 @@ foreach ($help_tab_aux as $help){
 <link type='text/css' href=<?=$module->getUrl('css/font-awesome.min.css')?> rel='stylesheet' media='screen' />
 <link type='text/css' href='<?=$module->getUrl('css/tabs-steps-menu.css')?>' rel='stylesheet' media='screen' />
 
-<link rel="icon" href="<?=$module->getUrl(getImageToDisplay($faq_favicon))?>">
+<link rel="icon" href="<?=$module->getUrl(\Vanderbilt\FaqMenuExternalModule\getImageToDisplay($faq_favicon))?>">
 
 <title><?=$faq_title_tab?></title>
 
@@ -116,13 +117,12 @@ if($faq_privacy == 'public'){
     if(!defined('USERID')){
         echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">Please log in REDCap to access this FAQ.</div></div>';
         exit;
-    }else if(isUserExpiredOrSuspended(USERID, 'user_suspended_time') || isUserExpiredOrSuspended(USERID, 'user_expiration')) {
+    }else if(\Vanderbilt\FaqMenuExternalModule\isUserExpiredOrSuspended(USERID, 'user_suspended_time') || \Vanderbilt\FaqMenuExternalModule\isUserExpiredOrSuspended(USERID, 'user_expiration')) {
         echo '<div class="container" style="margin-top: 60px"><div class="alert alert-warning" role="alert">This user is expired or suspended. Please contact an administrator.</div></div>';
         exit;
     }else{
-        $sql = "SELECT * FROM `redcap_user_rights` WHERE project_id='" . db_escape($_REQUEST['pid']) . "' AND username='" . db_escape(USERID) . "'";
-        $result = db_query($sql);
-        if (db_num_rows($result) > 0) {
+        $q = $module->query("SELECT * FROM `redcap_user_rights` WHERE project_id=? AND username=?",[$project_id, USERID]);
+        if ($q->num_rows > 0) {
             $has_permission = true;
         }
     }
@@ -138,9 +138,8 @@ if($faq_privacy == 'public'){
         exit;
     }else{
         foreach ($faq_project as $project) {
-            $sql = "SELECT * FROM `redcap_user_rights` WHERE project_id='" . db_escape($project) . "' AND username='" . db_escape(USERID) . "'";
-            $result = db_query($sql);
-            if (db_num_rows($result) > 0) {
+            $q = $module->query("SELECT * FROM `redcap_user_rights` WHERE project_id=? AND username=?",[$project, USERID]);
+            if ($q->num_rows > 0) {
                 $has_permission = true;
             }
         }
@@ -179,7 +178,7 @@ if($has_permission){
     if($faq_logo != ""){
         ?>
         <div class="container top-screen">
-            <?php echo printFile($module,$faq_logo,'img');?>
+            <?php echo \Vanderbilt\FaqMenuExternalModule\printFile($module,$faq_logo,'img');?>
         </div>
     <?php } ?>
 
@@ -187,8 +186,8 @@ if($has_permission){
     if($faq_title != "" || $faq_description != ""){
         ?>
         <div class="container" style="margin-top: 60px">
-            <h3><?=$faq_title?></h3>
-            <p class="hub-title"><?=$faq_description?></p>
+            <h3><?=filter_tags($faq_title)?></h3>
+            <p class="hub-title"><?=filter_tags($faq_description)?></p>
         </div>
     <?php } ?>
 
@@ -226,7 +225,7 @@ if($has_permission){
                     if($count == 0){
                         $active = 'active';
                     }
-                    echo '<li class="nav-item '.$active.'"><a data-toggle="tab" href="#'.$index.'">'.$tab.'</a></li>';
+                    echo '<li class="nav-item '.htmlentities($active,ENT_QUOTES).'"><a data-toggle="tab" href="#'.htmlentities($index,ENT_QUOTES).'">'.filter_tags($tab).'</a></li>';
                     $count++;
                 }
                 ?>
@@ -245,7 +244,7 @@ if($has_permission){
                     if($count == 0){
                         $active = 'active';
                     }
-                    echo '<div id="' . $index . '" class="tabpanel tab-pane fade in '.$active.'" role="tabpanel">';
+                    echo '<div id="' . $index . '" class="tabpanel tab-pane fade in '.htmlentities($active,ENT_QUOTES).'" role="tabpanel">';
                     echo '<div class="panel-group searchable" id="accordion-'.$index.'">';
                     foreach ($help_category as $category_id => $category_value) {
                         $category_count = 0;
@@ -254,7 +253,7 @@ if($has_permission){
                                 if($index == $faq['help_tab']) {
                                     if ($faq['help_category'] == $category_id && $faq['help_show_y'] != "0") {
                                         if ($category_count == 0) {
-                                            echo '<div class="faqHeader">' . $help_category[$faq['help_category']] . '</div>';
+                                            echo '<div class="faqHeader">' . htmlentities($help_category[$faq['help_category']],ENT_QUOTES) . '</div>';
                                         }
                                         $category_count++;
                                         $collapse_id = "category_" . $category_id . "_question_" . $category_count."_tab_".$index;
@@ -262,22 +261,22 @@ if($has_permission){
                                         echo '<div class="panel panel-default">
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
-                                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#' . $collapse_id . '">' . $faq['help_question'] . '</a>
+                                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#' . htmlentities($collapse_id,ENT_QUOTES) . '">' . filter_tags($faq['help_question']) . '</a>
                                         </h4>
                                     </div>
-                                    <div id="' . $collapse_id . '" class="panel-collapse collapse">
+                                    <div id="' . htmlentities($collapse_id,ENT_QUOTES) . '" class="panel-collapse collapse">
                                         <div class="panel-body">
-                                            <div>' . $faq['help_answer'] . '</div>';
+                                            <div>' . filter_tags($faq['help_answer']) . '</div>';
 
 
-                                        echo printFile($module, $faq['help_image'], 'img');
-                                        echo printFile($module, $faq['help_document'], 'doc');
-                                        echo printFile($module, $faq['help_document2'], 'doc');
+                                        echo filter_tags(\Vanderbilt\FaqMenuExternalModule\printFile($module, $faq['help_image'], 'img'));
+                                        echo filter_tags(\Vanderbilt\FaqMenuExternalModule\printFile($module, $faq['help_document'], 'doc'));
+                                        echo filter_tags(\Vanderbilt\FaqMenuExternalModule\printFile($module, $faq['help_document2'], 'doc'));
 
                                         if ($faq['help_videoformat'] == '1') {
-                                            echo '</br><div><iframe class="commentsform" id="redcap-video-frame" name="redcap-video-frame" src="' . $faq['help_videolink'] . '" width="520" height="345" frameborder="0" allowfullscreen style="display: block; margin: 0 auto;"></iframe></div>';
+                                            echo '</br><div><iframe class="commentsform" id="redcap-video-frame" name="redcap-video-frame" src="' . htmlentities($faq['help_videolink'],ENT_QUOTES) . '" width="520" height="345" frameborder="0" allowfullscreen style="display: block; margin: 0 auto;"></iframe></div>';
                                         } else {
-                                            echo '</br><div class="help_embedcode">' . $faq['help_embedcode'] . '</div>';
+                                            echo '</br><div class="help_embedcode">' .htmlspecialchars_decode($module->escape($faq['help_embedcode'])) . '</div>';
                                         }
 
                                         echo '</div>
