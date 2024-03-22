@@ -41,7 +41,7 @@ foreach ($help_tab_aux as $help){
 <link type='text/css' href=<?=$module->getUrl('css/font-awesome.min.css')?> rel='stylesheet' media='screen' />
 <link type='text/css' href='<?=$module->getUrl('css/tabs-steps-menu.css')?>' rel='stylesheet' media='screen' />
 
-<link rel="icon" href="<?=$module->getUrl(\Vanderbilt\FaqMenuExternalModule\getImageToDisplay($faq_favicon))?>">
+<link rel="icon" href="<?=$module->getUrl(getImageToDisplay($faq_favicon))?>">
 
 <title><?=$faq_title_tab?></title>
 
@@ -230,9 +230,9 @@ if($faq_title != "" || $faq_description != ""){
                                             <div>' . filter_tags($faq['help_answer']) . '</div>';
 
 
-                                    echo filter_tags(\Vanderbilt\FaqMenuExternalModule\printFile($module, $faq['help_image'], 'img'));
-                                    echo filter_tags(\Vanderbilt\FaqMenuExternalModule\printFile($module, $faq['help_document'], 'doc'));
-                                    echo filter_tags(\Vanderbilt\FaqMenuExternalModule\printFile($module, $faq['help_document2'], 'doc'));
+                                    echo filter_tags(printFile($module, $faq['help_image'], 'img'));
+                                    echo filter_tags(printFile($module, $faq['help_document'], 'doc'));
+                                    echo filter_tags(printFile($module, $faq['help_document2'], 'doc'));
 
                                     if ($faq['help_videoformat'] == '1') {
                                         echo '</br><div><iframe class="commentsform" id="redcap-video-frame" name="redcap-video-frame" src="' . htmlentities($faq['help_videolink'],ENT_QUOTES) . '" width="520" height="345" frameborder="0" allowfullscreen style="display: block; margin: 0 auto;"></iframe></div>';
