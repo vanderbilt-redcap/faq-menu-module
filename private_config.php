@@ -5,8 +5,8 @@ include_once(__DIR__ . "/functions.php");
 $faq_description = $module->getProjectSetting('faq-description');
 $faq_title = $module->getProjectSetting('faq-title');
 $faq_title_tab = $module->getProjectSetting('faq-title-tab');
-$faq_logo = htmlentities($module->getProjectSetting('faq-logo'));
-$faq_favicon = htmlentities($module->getProjectSetting('faq-favicon'));
+$faq_logo = $module->getProjectSetting('faq-logo');
+$faq_favicon = $module->getProjectSetting('faq-favicon');
 $faq_project = $module->getProjectSetting('faq-project');
 $faq_search = $module->getProjectSetting('faq-search');
 $faq_pdf = $module->getProjectSetting('faq-pdf');
@@ -178,7 +178,7 @@ if($has_permission){
     if($faq_logo != ""){
         ?>
         <div class="container top-screen">
-            <?php echo printFile($module,$faq_logo,'img');?>
+            <?php echo printFile($module,(int)$faq_logo,'img');?>
         </div>
     <?php } ?>
 
@@ -269,9 +269,9 @@ if($has_permission){
                                             <div>' . filter_tags($faq['help_answer']) . '</div>';
 
 
-                                        echo printFile($module, htmlentities($faq['help_image']), 'img');
-                                        echo printFile($module, htmlentities($faq['help_document']), 'doc');
-                                        echo printFile($module, htmlentities($faq['help_document2']), 'doc');
+                                        echo printFile($module, (int)$faq['help_image'], 'img');
+                                        echo printFile($module, (int)$faq['help_document'], 'doc');
+                                        echo printFile($module, (int)$faq['help_document2'], 'doc');
 
                                         if ($faq['help_videoformat'] == '1') {
                                             echo '</br><div><iframe class="commentsform" id="redcap-video-frame" name="redcap-video-frame" src="' . htmlentities($faq['help_videolink'],ENT_QUOTES) . '" width="520" height="345" frameborder="0" allowfullscreen style="display: block; margin: 0 auto;"></iframe></div>';
