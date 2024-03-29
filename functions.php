@@ -37,8 +37,9 @@ function printFile($module,$edoc, $type){
     if($edoc != ""){
         $q = $module->query("SELECT stored_name,doc_name,doc_size,mime_type FROM redcap_edocs_metadata WHERE doc_id=?",[$edoc]);
         while ($row = $q->fetch_assoc()) {
+            $row = $module->escape($row);
             $url = 'downloadFile.php?sname=' . $row['stored_name'] . '&file=' . urlencode($row['doc_name']);
-            $base64 = base64_encode(file_get_contents(EDOC_PATH.$row['stored_name']));
+            $base64 = base64_encode(file_get_contents($module->getSafePath($row['stored_name'],EDOC_PATH)));
             if($type == "img"){
                 $file = '<br/><div class="inside-panel-content"><img src="data:'.$row['mime_type'].';base64,' . $base64. '" style="display: block; margin: 0 auto;"></div>';
             }else if($type == "logo"){
@@ -46,7 +47,7 @@ function printFile($module,$edoc, $type){
             }else if($type == "imgpdf"){
                 $file = '<div style="max-width: 450px;height: 500px;"><img src="data:'.$row['mime_type'].';base64,' . $base64. '" style="display: block; margin: 0 auto;width:450px;height: 450px;"></div>';
             }else{
-                $file = '<br/><div class="inside-panel-content"><a href="'.$module->getUrl($url,true).'" target="_blank"><span class="fa fa-file-o"></span> ' . htmlentities($row['doc_name'],ENT_QUOTES) . '</a></div>';
+                $file = '<br/><div class="inside-panel-content"><a href="'.$module->getUrl($url,true).'" target="_blank"><span class="fa fa-file-o"></span> ' . $row['doc_name'] . '</a></div>';
             }
         }
     }
