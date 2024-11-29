@@ -35,7 +35,7 @@ foreach ($help_tab_aux as $help){
 <!-- To scale on mobile add this line -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<script type="text/javascript" src="<?=$module->getUrl('js/jquery-3.3.1.min.js')?>"></script>
+<?php echo $module->loadREDCapJS(); ?>
 <script type="text/javascript" src="<?=$module->getUrl('js/bootstrap.min.js')?>"></script>
 
 <link rel="stylesheet" type="text/css" href="<?=$module->getUrl('css/bootstrap.min.css')?>">
